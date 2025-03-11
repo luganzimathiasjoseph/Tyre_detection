@@ -120,7 +120,7 @@
             })
             .catch(error => {
                 loadingText.style.display = "none";  // Hide loading text
-                resultText.innerText = "Detection: Good";
+                resultText.innerText = "Error: Unable to process, timeout";
                 console.error("Error:", error);
             });
         }
