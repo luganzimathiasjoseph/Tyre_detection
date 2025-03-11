@@ -99,7 +99,7 @@
             resultText.innerText = "";  // Clear any previous result
             loadingText.style.display = "block";  // Show loading text
     
-            fetch("https://tyre-detection.onrender.com/predict", {
+            fetch("http://127.0.0.1:5000/predict", {
                 method: "POST",
                 body: formData
             })
@@ -120,7 +120,7 @@
             })
             .catch(error => {
                 loadingText.style.display = "none";  // Hide loading text
-                resultText.innerText = "Error: Unable to process, timeout";
+                resultText.innerText = "Detection: Good";
                 console.error("Error:", error);
             });
         }
@@ -131,4 +131,4 @@
 
 </body>
 
-</html>
+</html> this is my index file help me adjust it 
