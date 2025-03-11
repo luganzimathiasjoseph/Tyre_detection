@@ -8,7 +8,6 @@ from torchvision import models, transforms
 from PIL import Image
 import os
 import warnings
-import signal
 
 # Suppress warnings
 warnings.filterwarnings("ignore")
@@ -55,10 +54,6 @@ def load_model():
 # Call the function to load the model once at the beginning of the app startup
 load_model()
 
-# Define a timeout handler for inference to avoid blocking worker processes
-def timeout_handler(signum, frame):
-    raise TimeoutError("Inference exceeded time limit")
-
 # Set up a route for the home page
 @app.route('/')
 def home():
@@ -98,20 +93,14 @@ def predict():
         img = transform(pil_img)
         img = img.unsqueeze(0).to(device)  # Add batch dimension & move to device
 
-        # Set the timeout for the inference (e.g., 10 seconds)
-        signal.signal(signal.SIGALRM, timeout_handler)
-        signal.alarm(10)  # Timeout after 10 seconds
-
         try:
             # Run prediction
             with torch.no_grad():
                 output = model(img)
                 _, predicted = torch.max(output, 1)  # Get predicted class
                 result = "Good" if predicted.item() == 1 else "Defective"
-        except TimeoutError:
-            return jsonify({'error': 'Inference timed out'}), 408
-        finally:
-            signal.alarm(0)  # Cancel the timeout signal
+        except Exception as e:
+            return jsonify({'error': f'Inference error: {e}'}), 500
 
         return jsonify({'result': result})
 
