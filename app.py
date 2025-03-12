@@ -4,7 +4,8 @@ import torch
 import torch.nn as nn
 import numpy as np
 import cv2
-from torchvision import models, transforms
+import torchvision.models as models
+from torchvision import transforms
 from PIL import Image
 import os
 import warnings
@@ -23,7 +24,7 @@ print(f"Using device: {device}")
 # Load the MobileNetV2 model
 def load_model():
     global model
-    model = models.mobilenet_v2(pretrained=False)  # Load MobileNetV2
+    model = models.mobilenet_v2(pretrained=True)   # Load MobileNetV2
     num_ftrs = model.classifier[1].in_features
     model.classifier[1] = nn.Linear(num_ftrs, 2)  # Binary classification (Good vs. Defective)
     model = model.to(device)
