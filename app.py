@@ -12,19 +12,20 @@ import warnings
 # Suppress warnings
 warnings.filterwarnings("ignore")
 
+# Initialize Flask app
 app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# Device setup
+# Device setup (use GPU if available)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
-# Load the model ONCE when the application starts
+# Load the MobileNetV2 model
 def load_model():
     global model
-    model = models.resnet18(pretrained=True)
-    num_ftrs = model.fc.in_features
-    model.fc = nn.Linear(num_ftrs, 2)  # Binary classification (Good vs. Defective)
+    model = models.mobilenet_v2(pretrained=False)  # Load MobileNetV2
+    num_ftrs = model.classifier[1].in_features
+    model.classifier[1] = nn.Linear(num_ftrs, 2)  # Binary classification (Good vs. Defective)
     model = model.to(device)
     model.eval()
 
@@ -41,11 +42,11 @@ def load_model():
 # Call load_model() when the app starts
 load_model()
 
-# Image preprocessing function
+# Image preprocessing function (must match training settings)
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Ensure this matches training
 ])
 
 @app.route('/')
@@ -81,7 +82,7 @@ def predict():
     with torch.no_grad():
         output = model(img)
         _, predicted = torch.max(output, 1)
-        result = "Defective" if predicted.item() == 1 else "Good"
+        result = "Good" if predicted.item() == 1 else "Defective"
 
     return jsonify({'result': result})
 
