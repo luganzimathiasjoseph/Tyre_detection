@@ -4,10 +4,10 @@ from PIL import Image
 import io
 
 # Flask API endpoint
-FLASK_API_URL = "http://127.0.0.1:5000/predict"
+FLASK_API_URL = "https://liammatt5-tyre-detection.hf.space/predict"
 
-st.title("Tire Defect Detection")
-st.write("Upload an image of a tire to check if it's defective or not.")
+st.title("Tyre Defect Detection")
+st.write("Upload an image of a tyre.")
 
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
