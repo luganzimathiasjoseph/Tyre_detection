@@ -45,7 +45,7 @@ transform = transforms.Compose([
 ])
 
 st.title("Tyre Defect Detection")
-st.write("Upload an image of a tyre to check if it's defective.")
+st.write("Upload an image of a tyre")
 
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
