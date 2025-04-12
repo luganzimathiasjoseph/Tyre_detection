@@ -28,5 +28,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: your-dockerhub-username/your-image-name:latest
-# 
+          tags: mathiasjoseph/mobilenetv2:latest
+
