@@ -8,6 +8,8 @@ from PIL import Image
 import io
 import warnings
 import os
+import requests
+
 
 # Suppress warnings
 warnings.filterwarnings("ignore")
