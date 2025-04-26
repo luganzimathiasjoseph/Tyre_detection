@@ -52,10 +52,23 @@ uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
     st.image(image, caption="Uploaded Image", use_container_width=True)
+
+    # Upload file to server
+    file_bytes = uploaded_file.read()
+    upload_url = "https://mobilenetv-d5164277-25d2-4284-b99f.ahumain.cranecloud.io/_stcore/upload_file/bf3ed5a6-8bd2-42d7-981f-ff26e3df45a1/d1ad4478-3a5c-437b-99f7-76a6f9a98edb"
+    headers = {
+        "Content-Type": "application/octet-stream",
+    }
+    response = requests.put(upload_url, headers=headers, data=file_bytes)
     
+    if response.status_code == 200:
+        st.success("File uploaded successfully to server.")
+    else:
+        st.error(f"Failed to upload file: {response.status_code} {response.text}")
+
     # Convert image to tensor
     img = transform(image).unsqueeze(0).to(device)
-    
+
     if st.button("Predict"):
         with torch.no_grad():
             output = model(img)
